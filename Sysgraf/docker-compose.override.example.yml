@@ -1,0 +1,46 @@
+# This file is used for local development overrides
+# Copy to docker-compose.override.yml and customize as needed
+# This file is ignored by git
+
+version: '3.8'
+
+services:
+  # Example: Override PostgreSQL to use a local volume
+  postgres:
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  # Example: Override Redis to use a local volume
+  redis:
+    volumes:
+      - ./data/redis:/data
+
+  # Example: Override RabbitMQ to use a local volume
+  rabbitmq:
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+
+  # Example: Override Elasticsearch to use a local volume
+  elasticsearch:
+    volumes:
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+
+  # Example: Override MinIO to use a local volume
+  minio:
+    volumes:
+      - ./data/minio:/minio_data
+
+  # Example: Add a local development service
+  # my-local-service:
+  #   build:
+  #     context: ./services/my-service
+  #     dockerfile: Dockerfile.dev
+  #   environment:
+  #     NODE_ENV: development
+  #   ports:
+  #     - "3099:3099"
+  #   volumes:
+  #     - ./services/my-service/src:/app/src
+  #   depends_on:
+  #     - postgres
+  #     - redis
