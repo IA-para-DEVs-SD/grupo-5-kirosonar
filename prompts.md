@@ -18,3 +18,11 @@ Arquivo de referência utilizado como contexto: `backend/docs/padrao-projeto.md`
 4. Tecnologias utilizadas
 5. Instruções de instalação / uso
 6. Integrantes do grupo
+
+
+## Prompts de criacao de specs
+
+### SPEC 1
+
+Usando #TASK-01-cli-base.md crie um spec para implementar a task descrita. Siga tambem os documentos #PRD.md e #padrao-projeto.md 
+
