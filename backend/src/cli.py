@@ -6,12 +6,12 @@ Orchestrates the flow: file discovery → diff capture → LLM analysis → repo
 import argparse
 import sys
 
+from src.ai_service import call_llm
+from src.autofix import apply_fix
 from src.config import load_rules
 from src.git_module import get_changed_files, get_file_diff, read_file_content
 from src.prompt_builder import build_prompt
-from src.ai_service import call_llm
 from src.report import save_report
-from src.autofix import apply_fix
 
 
 def _check_python_version() -> None:

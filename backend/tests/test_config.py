@@ -14,7 +14,9 @@ class TestLoadRules:
         result = load_rules("nonexistent_file.md")
         assert result == DEFAULT_RULES
 
-    def test_returns_default_rules_when_none_and_no_file_in_cwd(self, tmp_path, monkeypatch) -> None:
+    def test_returns_default_rules_when_none_and_no_file_in_cwd(
+        self, tmp_path, monkeypatch
+    ) -> None:
         """Should return DEFAULT_RULES when path is None and regras_empresa.md is absent."""
         monkeypatch.chdir(tmp_path)
         result = load_rules(None)

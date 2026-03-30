@@ -1,7 +1,8 @@
 """Unit tests for src/git_module.py."""
 
+from unittest.mock import MagicMock, mock_open, patch
+
 import pytest
-from unittest.mock import patch, mock_open, MagicMock
 
 from src.git_module import get_changed_files, get_file_diff, read_file_content
 
