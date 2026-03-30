@@ -1,16 +1,34 @@
-#!/bin/sh
+#!/usr/bin/env python3
+"""Pre-commit hook: roda Ruff lint, format e pytest antes de cada commit."""
 
-ruff check backend/
-if [ $? -ne 0 ]; then
-  echo "❌ Lint falhou. Corrija os erros antes de commitar."
-  exit 1
-fi
+import subprocess
+import sys
 
-ruff format --check backend/
-if [ $? -ne 0 ]; then
-  echo "❌ Formatação incorreta. Rode 'ruff format backend/' antes de commitar."
-  exit 1
-fi
 
-echo "✅ Lint e formatação OK"
-exit 0
+def run(cmd: list[str]) -> int:
+    result = subprocess.run(cmd)
+    return result.returncode
+
+
+def main() -> int:
+    print("🔍 Rodando Ruff lint...")
+    if run(["ruff", "check", "backend/"]) != 0:
+        print("❌ Lint falhou. Corrija os erros antes de commitar.")
+        return 1
+
+    print("🔍 Verificando formatação...")
+    if run(["ruff", "format", "--check", "backend/"]) != 0:
+        print("❌ Formatação incorreta. Rode 'ruff format backend/' antes de commitar.")
+        return 1
+
+    print("🧪 Rodando testes...")
+    if run([sys.executable, "-m", "pytest", "backend/tests/", "-q"]) != 0:
+        print("❌ Testes falharam. Corrija os testes antes de commitar.")
+        return 1
+
+    print("✅ Lint, formatação e testes OK.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
