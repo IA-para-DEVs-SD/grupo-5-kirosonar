@@ -35,14 +35,3 @@ Sempre que uma tarefa for solicitada (ex: TASK-01), você DEVE seguir este proto
    - **Pontos Críticos:** Indicar linhas sensíveis para o revisor.
    - **Comando de Teste:** Instruir a rodar `pytest tests/test_{modulo}.py`.
 4. **Confirmação:** Informe onde os arquivos foram gerados.
-
-# Estrutura do Projeto (Índice)
-kirosonar/
-├── docs/
-│   ├── tickets/                  # Tarefas de desenvolvimento (PT-BR)
-│   ├── code-review/              # Checklists para revisão (PT-BR)
-│   └── RFC-001-KiroSonar-MVP.md  # Contrato do MVP (PT-BR)
-├── src/                          # Código fonte (EN)
-├── tests/                        # Testes unitários (EN)
-├── README.md                     # Setup e instruções (PT-BR)
-└── AGENTS.md                      # Diretrizes e identidade
