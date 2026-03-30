@@ -317,3 +317,43 @@ Conforme o padrao de projeto estabelecido pelo professor atualize o readme para 
 > (agora em `.kiro/padrao-projeto.md`). O padrão exige: Nome do Projeto, Breve descrição, 
 > Sumário de documentações, Tecnologias utilizadas, Instruções de instalação/uso, 
 > Integrantes do grupo.
+
+---
+
+Preciso que você configure o Ruff como linter e formatter do projeto KiroSonar, seguindo estas instruções:
+                                                                                                                                                                                                                                    
+## 1. Instalação                                                                                                                                 
+
+Adicione o ruff como dependência de desenvolvimento no `backend/pyproject.toml` usando o grupo `[project.optional-dependencies]` com a chave `dev`. Depois rode `pip install -e ".[dev]"` para instalar.                            
+
+## 2. Configuração no pyproject.
+Adicione a seção `[tool.ruff]` no `backend/pyproject.toml` com estas convenções:                                                                                                                                - Target: Python 3.11
+- Line length: 99
+- Regras habilitadas:
+    - E (pycodestyle errors)
+    - W (pycodestyle warnings)
+    - F (pyflakes)
+    - I (isort — ordenação de imports)
+    - N (pep8-naming)
+
+---
+
+Configure um pre-commit hook do Git no projeto KiroSonar que rode o Ruff automaticamente antes de cada commit e bloqueie o commit se houver violações. Siga estas instruções:
+
+## 1. Criar o hook
+
+Crie o arquivo `scripts/pre-commit` (sem extensão) com o seguinte comportamento: 
+
+- Rodar `ruff check backend/` nos arquivos Python do backend
+- Se o ruff encontrar erros, exibir mensagem "❌ Lint falhou. Corrija os erros antes de commitar." e bloquear o commit (exit 1)
+- Se passar, rodar `ruff format --check backend/`
+- Se a formatação estiver errada, exibir mensagem "❌ Formatação incorreta. Rode 'ruff format backend/' antes de commitar." e bloquear o commit (exit 1)
+
+- Se tudo passar, exibir "✅ Lint e formatação OK" e permitir o commit (exit 0)
+
+## 2. Script de instalação do hook
+
+Crie o arquivo `scripts/install-hooks.sh` que:
+- Copia `scripts/pre-commit` para `.git/hooks/pre-commit` 
+- Dá permissão de execução (`chmod +x`)
+- Exibe mensagem de confirmação
