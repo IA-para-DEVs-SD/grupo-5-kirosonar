@@ -357,3 +357,70 @@ Crie o arquivo `scripts/install-hooks.sh` que:
 - Copia `scripts/pre-commit` para `.git/hooks/pre-commit` 
 - Dá permissão de execução (`chmod +x`)
 - Exibe mensagem de confirmação
+
+---
+
+## Camada 7 — Qualidade de Código (Linter e Hooks)
+
+### 7.1 Configuração do Ruff como Linter e Formatter
+
+```
+Preciso que você configure o Ruff como linter e formatter do projeto KiroSonar, seguindo estas instruções:
+
+## 1. Instalação
+
+Adicione o ruff como dependência de desenvolvimento no `backend/pyproject.toml` usando o grupo `[project.optional-dependencies]` com a chave `dev`. Depois rode `pip install -e ".[dev]"` para instalar.
+
+## 2. Configuração no pyproject.toml
+
+Adicione a seção `[tool.ruff]` no `backend/pyproject.toml` com estas convenções:
+
+- Target: Python 3.11
+- Line length: 120
+- Regras habilitadas:
+  - E (pycodestyle errors)
+  - W (pycodestyle warnings)
+  - F (pyflakes)
+  - I (isort — ordenação de imports)
+  - N (pep8-naming)
+  - UP (pyupgrade — modernização de sintaxe)
+  - B (flake8-bugbear — bugs comuns)
+  - SIM (flake8-simplify — simplificações)
+  - D (pydocstyle — docstrings, convenção google)
+- Ignorar regra D104 (missing docstring in public package) nos arquivos `__init__.py`
+- Ignorar regra D100 (missing docstring in public module) nos arquivos de teste `tests/`
+- Formato de docstring: google
+
+## 3. Validação
+
+- Rode `ruff check backend/` e `ruff format --check backend/` e corrija qualquer violação encontrada nos arquivos existentes do `backend/src/` e `backend/tests/`
+- Garanta que os 26 testes continuam passando após as correções
+- NÃO altere a lógica dos testes, apenas formatação e estilo
+```
+
+### 7.2 Pre-commit Hook com Lint e Testes
+
+```
+Configure um pre-commit hook do Git no projeto KiroSonar que rode o Ruff e os testes automaticamente antes de cada commit e bloqueie o commit se houver violações. Siga estas instruções:
+
+## 1. Criar o hook
+
+Crie o arquivo `scripts/pre-commit` em Python puro (cross-platform, sem sh/bash) com shebang `#!/usr/bin/env python3` e o seguinte comportamento:
+
+1. Rodar `ruff check backend/` — se falhar, exibir "❌ Lint falhou. Corrija os erros antes de commitar." e bloquear (exit 1)
+2. Rodar `ruff format --check backend/` — se falhar, exibir "❌ Formatação incorreta. Rode 'ruff format backend/' antes de commitar." e bloquear (exit 1)
+3. Rodar `python -m pytest backend/tests/ -q` — se falhar, exibir "❌ Testes falharam. Corrija os testes antes de commitar." e bloquear (exit 1)
+4. Se tudo passar, exibir "✅ Lint, formatação e testes OK." e permitir o commit (exit 0)
+
+## 2. Script de instalação do hook
+
+Crie o arquivo `scripts/install_hooks.py` em Python puro que:
+- Copia `scripts/pre-commit` para `.git/hooks/pre-commit`
+- Dá permissão de execução
+- Exibe mensagem de confirmação
+
+## 3. Documentação
+
+Adicione no README.md, na seção de "Configuração do Ambiente de Desenvolvimento", a instrução:
+python scripts/install_hooks.py
+```
