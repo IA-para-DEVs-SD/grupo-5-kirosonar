@@ -1,0 +1,16 @@
+#!/bin/sh
+
+ruff check backend/
+if [ $? -ne 0 ]; then
+  echo "❌ Lint falhou. Corrija os erros antes de commitar."
+  exit 1
+fi
+
+ruff format --check backend/
+if [ $? -ne 0 ]; then
+  echo "❌ Formatação incorreta. Rode 'ruff format backend/' antes de commitar."
+  exit 1
+fi
+
+echo "✅ Lint e formatação OK"
+exit 0
