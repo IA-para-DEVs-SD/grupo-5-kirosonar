@@ -1,8 +1,8 @@
 """Geração e salvamento de relatórios em Markdown."""
 
 import os
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
 
 
 @dataclass
@@ -29,7 +29,9 @@ def generate_report_name(file_path: str) -> str:
 
 
 def list_reports(reports_dir: str = "relatorios") -> list[ReportEntry]:
-    """Lista os relatórios existentes na pasta relatorios/, ordenados por data (mais recente primeiro).
+    """Lista os relatórios existentes na pasta relatorios/.
+
+    Ordenados por data (mais recente primeiro).
 
     Args:
         reports_dir: Caminho da pasta de relatórios.

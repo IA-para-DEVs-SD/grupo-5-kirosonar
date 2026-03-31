@@ -2,9 +2,8 @@
 
 import os
 from datetime import datetime
-from unittest.mock import patch, MagicMock
 
-from src.report import list_reports, ReportEntry
+from src.report import list_reports
 
 
 class TestListReports:

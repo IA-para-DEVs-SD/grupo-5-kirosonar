@@ -22,15 +22,15 @@ def run_kirosonar_analyze(file_path: str) -> tuple[str, int]:
     if REPORTS_PATH.exists():
         for old_report in REPORTS_PATH.glob("*.md"):
             old_report.unlink()
-    
+
     # Usa o comando kirosonar do venv
     kirosonar_cmd = BACKEND_PATH / ".venv" / "bin" / "kirosonar"
-    
+
     # Garante que ~/.local/bin está no PATH (onde kiro-cli está instalado)
     env = os.environ.copy()
     local_bin = Path.home() / ".local" / "bin"
     env["PATH"] = f"{local_bin}:{env.get('PATH', '')}"
-    
+
     result = subprocess.run(
         [str(kirosonar_cmd), "analyze", "--path", file_path],
         capture_output=True,
@@ -39,7 +39,7 @@ def run_kirosonar_analyze(file_path: str) -> tuple[str, int]:
         env=env,
         input="n\n",  # Responde "n" para o prompt de autofix
     )
-    
+
     # Lê o relatório gerado
     report_content = ""
     if REPORTS_PATH.exists():
@@ -48,7 +48,7 @@ def run_kirosonar_analyze(file_path: str) -> tuple[str, int]:
             # Pega o relatório mais recente
             latest_report = max(reports, key=lambda p: p.stat().st_mtime)
             report_content = latest_report.read_text(encoding="utf-8")
-    
+
     return report_content, result.returncode
 
 
@@ -61,8 +61,7 @@ class TestDetection:
         output, _ = run_kirosonar_analyze(str(file_path))
 
         assert any(
-            term in output.lower()
-            for term in ["unused", "não utilizada", "nunca utilizada"]
+            term in output.lower() for term in ["unused", "não utilizada", "nunca utilizada"]
         ), f"Expected unused variable detection in output: {output}"
 
     def test_detects_unreachable_code(self):
@@ -71,8 +70,7 @@ class TestDetection:
         output, _ = run_kirosonar_analyze(str(file_path))
 
         assert any(
-            term in output.lower()
-            for term in ["unreachable", "inalcançável", "dead code"]
+            term in output.lower() for term in ["unreachable", "inalcançável", "dead code"]
         ), f"Expected unreachable code detection in output: {output}"
 
     def test_detects_duplicate_code(self):
@@ -80,10 +78,9 @@ class TestDetection:
         file_path = JS_PROJECT_PATH / "duplicate_code.js"
         output, _ = run_kirosonar_analyze(str(file_path))
 
-        assert any(
-            term in output.lower()
-            for term in ["duplicate", "duplicado", "repetido"]
-        ), f"Expected duplicate code detection in output: {output}"
+        assert any(term in output.lower() for term in ["duplicate", "duplicado", "repetido"]), (
+            f"Expected duplicate code detection in output: {output}"
+        )
 
     def test_detects_security_vulnerability(self):
         """Test kirosonar analyze detects eval() usage."""
@@ -91,8 +88,7 @@ class TestDetection:
         output, _ = run_kirosonar_analyze(str(file_path))
 
         assert any(
-            term in output.lower()
-            for term in ["eval", "security", "segurança", "vulnerab"]
+            term in output.lower() for term in ["eval", "security", "segurança", "vulnerab"]
         ), f"Expected security vulnerability detection in output: {output}"
 
     def test_detects_long_function(self):
@@ -101,8 +97,7 @@ class TestDetection:
         output, _ = run_kirosonar_analyze(str(file_path))
 
         assert any(
-            term in output.lower()
-            for term in ["long", "longa", "complexa", "lines", "linhas"]
+            term in output.lower() for term in ["long", "longa", "complexa", "lines", "linhas"]
         ), f"Expected long function detection in output: {output}"
 
     def test_detects_loose_equality(self):
@@ -111,8 +106,7 @@ class TestDetection:
         output, _ = run_kirosonar_analyze(str(file_path))
 
         assert any(
-            term in output.lower()
-            for term in ["===", "strict", "equality", "igualdade"]
+            term in output.lower() for term in ["===", "strict", "equality", "igualdade"]
         ), f"Expected loose equality detection in output: {output}"
 
     def test_detects_console_log(self):
@@ -120,9 +114,9 @@ class TestDetection:
         file_path = JS_PROJECT_PATH / "console_logs.js"
         output, _ = run_kirosonar_analyze(str(file_path))
 
-        assert any(
-            term in output.lower() for term in ["console", "log", "debug"]
-        ), f"Expected console.log detection in output: {output}"
+        assert any(term in output.lower() for term in ["console", "log", "debug"]), (
+            f"Expected console.log detection in output: {output}"
+        )
 
     def test_detects_implicit_global(self):
         """Test kirosonar analyze detects implicit global variables."""
@@ -130,8 +124,7 @@ class TestDetection:
         output, _ = run_kirosonar_analyze(str(file_path))
 
         assert any(
-            term in output.lower()
-            for term in ["global", "let", "const", "var", "declaração"]
+            term in output.lower() for term in ["global", "let", "const", "var", "declaração"]
         ), f"Expected implicit global detection in output: {output}"
 
     def test_detects_callback_hell(self):
@@ -150,6 +143,5 @@ class TestDetection:
         output, _ = run_kirosonar_analyze(str(file_path))
 
         assert any(
-            term in output.lower()
-            for term in ["catch", "error", "erro", "exception", "try"]
+            term in output.lower() for term in ["catch", "error", "erro", "exception", "try"]
         ), f"Expected missing error handling detection in output: {output}"

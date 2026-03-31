@@ -103,8 +103,9 @@ class TestReportCommand:
 
     @patch("src.cli.list_reports")
     def test_report_lists_entries(self, mock_list, capsys) -> None:
-        from src.report import ReportEntry
         from datetime import datetime
+
+        from src.report import ReportEntry
 
         mock_list.return_value = [
             ReportEntry(
