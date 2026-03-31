@@ -1,6 +1,7 @@
 """Extração e aplicação do código refatorado (Auto-Fix)."""
 
 import re
+import shutil
 
 
 def extract_refactored_code(ai_response: str) -> str | None:
@@ -38,6 +39,10 @@ def apply_fix(ai_response: str, file_path: str) -> bool:
     if answer != "s":
         print("❌ Fix não aplicado.")
         return False
+
+    backup_path = file_path + ".bak"
+    shutil.copy2(file_path, backup_path)
+    print(f"💾 Backup salvo em '{backup_path}'.")
 
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(code)
