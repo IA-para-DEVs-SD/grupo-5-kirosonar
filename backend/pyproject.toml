@@ -7,6 +7,7 @@ name = "KiroSonar"
 version = "0.1.0"
 description = "Code Review Inteligente e Auto-Fix com IA no terminal"
 requires-python = ">=3.11"
+dependencies = ["python-dotenv>=1.0"]
 
 [project.optional-dependencies]
 dev = ["ruff"]
@@ -20,6 +21,15 @@ line-length = 99
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "N"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short"
 
 [tool.setuptools.packages.find]
 where = ["."]

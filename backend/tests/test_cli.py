@@ -89,3 +89,38 @@ class TestMain:
             main()
         output = capsys.readouterr().out
         assert "Arquivo não encontrado" in output
+
+
+class TestReportCommand:
+    """Tests for the 'report' subcommand."""
+
+    @patch("src.cli.list_reports", return_value=[])
+    def test_report_empty_prints_no_reports(self, mock_list, capsys) -> None:
+        with patch("sys.argv", ["kirosonar", "report"]):
+            main()
+        output = capsys.readouterr().out
+        assert "Nenhum relatório encontrado." in output
+
+    @patch("src.cli.list_reports")
+    def test_report_lists_entries(self, mock_list, capsys) -> None:
+        from src.report import ReportEntry
+        from datetime import datetime
+
+        mock_list.return_value = [
+            ReportEntry(
+                name="src_app_py_20260318_173000.md",
+                generated_at=datetime(2026, 3, 18, 17, 30, 0),
+                size_bytes=1024,
+            )
+        ]
+        with patch("sys.argv", ["kirosonar", "report"]):
+            main()
+        output = capsys.readouterr().out
+        assert "src_app_py_20260318_173000.md" in output
+        assert "2026-03-18 17:30:00" in output
+        assert "1024 B" in output
+
+    def test_report_subcommand_registered_in_parser(self) -> None:
+        parser = _build_parser()
+        args = parser.parse_args(["report"])
+        assert args.command == "report"

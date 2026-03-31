@@ -6,12 +6,15 @@ Orchestrates the flow: file discovery → diff capture → LLM analysis → repo
 import argparse
 import sys
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from src.ai_service import call_llm
 from src.autofix import apply_fix
 from src.config import load_rules
 from src.git_module import get_changed_files, get_file_diff, read_file_content
 from src.prompt_builder import build_prompt
-from src.report import save_report
+from src.report import save_report, list_reports
 
 
 def _check_python_version() -> None:
@@ -35,7 +38,23 @@ def _build_parser() -> argparse.ArgumentParser:
     analyze = sub.add_parser("analyze", help="Analisa arquivos alterados ou específicos.")
     analyze.add_argument("--path", type=str, default=None, help="Arquivo específico para análise.")
     analyze.add_argument("--rules", type=str, default=None, help="Caminho para arquivo de regras.")
+    sub.add_parser("report", help="Lista os relatórios gerados em relatorios/.")
     return parser
+
+
+def _cmd_report() -> None:
+    """Exibe os relatórios existentes em relatorios/, ordenados por data."""
+    entries = list_reports()
+    if not entries:
+        print("Nenhum relatório encontrado.")
+        return
+
+    print(f"{'Arquivo':<50} {'Data de Geração':<20} {'Tamanho'}")
+    print("-" * 80)
+    for entry in entries:
+        date_str = entry.generated_at.strftime("%Y-%m-%d %H:%M:%S")
+        size_str = f"{entry.size_bytes} B"
+        print(f"{entry.name:<50} {date_str:<20} {size_str}")
 
 
 def main() -> None:
@@ -43,6 +62,10 @@ def main() -> None:
     _check_python_version()
     parser = _build_parser()
     args = parser.parse_args()
+
+    if args.command == "report":
+        _cmd_report()
+        return
 
     if args.command != "analyze":
         parser.print_help()
@@ -68,7 +91,13 @@ def main() -> None:
         diff = "" if args.path else get_file_diff(file_path)
 
         prompt = build_prompt(diff, full_code, rules, file_path)
-        response = call_llm(prompt)
+
+        try:
+            response = call_llm(prompt)
+        except RuntimeError as exc:
+            print(f"❌ Erro na análise de '{file_path}': {exc}")
+            continue
+
         report_path = save_report(response, file_path)
         print(f"📄 Relatório salvo em: {report_path}")
         apply_fix(response, file_path)

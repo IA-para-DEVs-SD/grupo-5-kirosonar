@@ -47,6 +47,8 @@ backend/src/
 - [Tickets de Desenvolvimento](./backend/docs/tickets/)
 - [User Stories](./backend/docs/user-stories/)
 - [Code Reviews](./backend/docs/code-review/)
+- [Padrão de Projeto](./backend/docs/padrao-projeto.md)
+- [Tickets de Desenvolvimento (Backend)](./backend/docs/tickets/)
 
 ---
 

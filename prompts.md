@@ -424,3 +424,10 @@ Crie o arquivo `scripts/install_hooks.py` em Python puro que:
 Adicione no README.md, na seção de "Configuração do Ambiente de Desenvolvimento", a instrução:
 python scripts/install_hooks.py
 ```
+## Camada 8 - Testes automatizados
+
+### Prompt pedido para modo spec:
+- Prompt inicial: Crie um projeto JS simples na pasta backend/tests/js-project, com erros comuns detectados pelo sonarlint. Crie 10 testes de integração que aplicam a funcionalidade do kiroSonar a esse teste, e verificam que os erros do projeto foram corrigidos. A suite de testes deve duplicar o projeto antes de aplicar a funcionalidade, para manter intocado o projeto em backend/tests/js-project.
+- Prompt importante para correção dos specs: O documento de requirements e design está utilizando a ferramenta kirosonar analyze?
+- Prompt subsequente: o analyze não corrige o código. Então modifique os testes para apenas verificar que os erros foram detectados
+- Prompt subsequente: Como não estamos modificando mais os arquivos, não precisamos dos requisitos para preservação de arquivo
