@@ -9,7 +9,7 @@ import sys
 from dotenv import load_dotenv
 
 from src.ai_service import call_llm
-from src.autofix import apply_fix
+from src.autofix import _validate_path, apply_fix
 from src.config import load_rules
 from src.git_module import get_changed_files, get_file_diff, read_file_content
 from src.prompt_builder import build_prompt
@@ -81,6 +81,12 @@ def main() -> None:
 
     for file_path in files:
         print(f"\n🔍 Analisando: {file_path}")
+
+        try:
+            _validate_path(file_path)
+        except ValueError as exc:
+            print(f"⚠️  {exc}")
+            continue
 
         try:
             full_code = read_file_content(file_path)

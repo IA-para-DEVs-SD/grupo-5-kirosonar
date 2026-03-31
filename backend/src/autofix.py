@@ -1,7 +1,22 @@
 """Extração e aplicação do código refatorado (Auto-Fix)."""
 
+import os
 import re
 import shutil
+
+from src.git_module import get_repo_root
+
+
+def _validate_path(file_path: str) -> None:
+    """Valida que file_path está dentro do repositório Git (previne path traversal).
+
+    Raises:
+        ValueError: Se o caminho está fora do repositório.
+    """
+    repo_root = os.path.realpath(get_repo_root())
+    resolved = os.path.realpath(file_path)
+    if not resolved.startswith(repo_root + os.sep) and resolved != repo_root:
+        raise ValueError(f"Caminho fora do repositório: {file_path}")
 
 
 def extract_refactored_code(ai_response: str) -> str | None:
@@ -31,6 +46,8 @@ def apply_fix(ai_response: str, file_path: str) -> bool:
     if code is None:
         print("⚠️  Nenhum código refatorado encontrado na resposta da IA.")
         return False
+
+    _validate_path(file_path)
 
     preview = "\n".join(code.splitlines()[:20])
     print(f"\n📝 Preview do código refatorado para '{file_path}':\n{preview}\n")

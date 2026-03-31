@@ -6,6 +6,24 @@ as specified in RF-01 of the PRD.
 """
 
 
+def _sanitize_user_content(text: str) -> str:
+    """Sanitiza conteúdo do usuário para prevenir prompt injection.
+
+    Delimita claramente dados do usuário vs instruções do sistema,
+    removendo padrões que poderiam ser interpretados como instruções.
+    """
+    # Remove padrões comuns de prompt injection (case-insensitive)
+    sanitized = text.replace("```", "` ` `")
+    text_lower = sanitized.lower()
+    for marker in ["[system]", "[inst]", "<<sys>>", "<</sys>>", "[/inst]"]:
+        idx = text_lower.find(marker)
+        while idx != -1:
+            sanitized = sanitized[:idx] + sanitized[idx + len(marker) :]
+            text_lower = sanitized.lower()
+            idx = text_lower.find(marker)
+    return sanitized
+
+
 def build_prompt(diff: str, full_code: str, rules: str, file_path: str) -> str:
     """Assemble the complete prompt for the LLM.
 
@@ -19,6 +37,10 @@ def build_prompt(diff: str, full_code: str, rules: str, file_path: str) -> str:
         Formatted prompt instructing the LLM to return the report
         in the fixed template with refactored code between [START]/[END].
     """
+    # Sanitiza conteúdo do usuário antes de injetar no prompt
+    full_code = _sanitize_user_content(full_code)
+    diff = _sanitize_user_content(diff) if diff else diff
+
     # Seção de diff só é incluída quando há alterações
     diff_section = ""
     if diff:

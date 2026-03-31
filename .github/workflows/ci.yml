@@ -18,7 +18,7 @@ jobs:
           python-version: "3.11"
 
       - name: Instalar dependências
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[dev]" pip-audit
         working-directory: backend
 
       - name: Ruff lint
@@ -29,9 +29,12 @@ jobs:
         run: ruff format --check .
         working-directory: backend
 
+      - name: Auditoria de dependências
+        run: pip-audit
+        working-directory: backend
+
       - name: Testes com cobertura
         run: python -m pytest tests/ -v --cov=src --cov-report=term-missing --cov-fail-under=80
-        working-directory: backend
 
       - name: Auditoria de dependências
         run: pip install pip-audit && pip-audit
