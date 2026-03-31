@@ -47,8 +47,6 @@ backend/src/
 - [Tickets de Desenvolvimento](./backend/docs/tickets/)
 - [User Stories](./backend/docs/user-stories/)
 - [Code Reviews](./backend/docs/code-review/)
-- [Padrão de Projeto](./backend/docs/padrao-projeto.md)
-- [Tickets de Desenvolvimento (Backend)](./backend/docs/tickets/)
 
 ---
 
@@ -115,6 +113,8 @@ Copie o arquivo de exemplo e ajuste conforme necessário:
 ```bash
 cp backend/.env.example backend/.env
 ```
+
+> O arquivo `.env` está listado no `.gitignore` e nunca será commitado no repositório.
 
 ---
 

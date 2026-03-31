@@ -10,7 +10,7 @@ requires-python = ">=3.11"
 dependencies = ["python-dotenv>=1.0"]
 
 [project.optional-dependencies]
-dev = ["ruff"]
+dev = ["ruff", "pytest", "pytest-cov"]
 
 [project.scripts]
 kirosonar = "src.cli:main"
@@ -29,7 +29,8 @@ indent-style = "space"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-v --tb=short"
+addopts = "-v --tb=short -m 'not integration'"
+markers = ["integration: testes de integração (lentos, requerem kiro-cli)"]
 
 [tool.setuptools.packages.find]
 where = ["."]

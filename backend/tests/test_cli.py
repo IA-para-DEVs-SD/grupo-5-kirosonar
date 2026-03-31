@@ -1,6 +1,9 @@
 """Unit tests for src.cli module."""
 
+import sys
 from unittest.mock import patch
+
+import pytest
 
 from src.cli import _build_parser, main
 
@@ -90,6 +93,30 @@ class TestMain:
         output = capsys.readouterr().out
         assert "Arquivo não encontrado" in output
 
+    def test_check_python_version_exits_on_old_python(self) -> None:
+        with patch("src.cli.sys") as mock_sys:
+            mock_sys.version_info = (3, 10)
+            mock_sys.exit = sys.exit
+            with pytest.raises(SystemExit):
+                from src.cli import _check_python_version
+
+                _check_python_version()
+
+    @patch("src.cli._validate_path", side_effect=ValueError("Caminho fora do repositório"))
+    def test_analyze_path_traversal_skips(self, mock_val, capsys) -> None:
+        with patch("sys.argv", ["kirosonar", "analyze", "--path", "/etc/passwd"]):
+            main()
+        output = capsys.readouterr().out
+        assert "Caminho fora do repositório" in output
+
+    @patch("src.cli.read_file_content", return_value="code")
+    @patch("src.cli.call_llm", side_effect=RuntimeError("Timeout"))
+    def test_analyze_llm_error_skips(self, mock_llm, mock_read, capsys) -> None:
+        with patch("sys.argv", ["kirosonar", "analyze", "--path", "file.py"]):
+            main()
+        output = capsys.readouterr().out
+        assert "Erro na análise" in output
+
 
 class TestReportCommand:
     """Tests for the 'report' subcommand."""
@@ -103,8 +130,9 @@ class TestReportCommand:
 
     @patch("src.cli.list_reports")
     def test_report_lists_entries(self, mock_list, capsys) -> None:
-        from src.report import ReportEntry
         from datetime import datetime
+
+        from src.report import ReportEntry
 
         mock_list.return_value = [
             ReportEntry(

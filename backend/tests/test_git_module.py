@@ -4,7 +4,23 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 
-from src.git_module import get_changed_files, get_file_diff, read_file_content
+from src.git_module import get_changed_files, get_file_diff, get_repo_root, read_file_content
+
+
+class TestGetRepoRoot:
+    """Tests for get_repo_root function."""
+
+    @patch("src.git_module.subprocess.run")
+    def test_returns_repo_root_on_success(self, mock_run: MagicMock) -> None:
+        mock_run.return_value = MagicMock(returncode=0, stdout="/home/user/repo\n")
+        assert get_repo_root() == "/home/user/repo"
+
+    @patch("src.git_module.subprocess.run")
+    def test_returns_cwd_on_failure(self, mock_run: MagicMock) -> None:
+        mock_run.return_value = MagicMock(returncode=128, stdout="", stderr="fatal")
+        import os
+
+        assert get_repo_root() == os.getcwd()
 
 
 class TestGetChangedFiles:

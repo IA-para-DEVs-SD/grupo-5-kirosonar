@@ -1,10 +1,9 @@
-"""Unit tests for src.report module — list_reports functionality."""
+"""Unit tests for src.report module."""
 
 import os
 from datetime import datetime
-from unittest.mock import patch, MagicMock
 
-from src.report import list_reports, ReportEntry
+from src.report import generate_report_name, list_reports, save_report
 
 
 class TestListReports:
@@ -60,3 +59,29 @@ class TestListReports:
         result = list_reports(str(tmp_path))
         assert len(result) == 1
         assert result[0].name == "report.md"
+
+
+class TestSaveReport:
+    """Tests for save_report."""
+
+    def test_creates_file_with_correct_content(self, tmp_path, monkeypatch) -> None:
+        monkeypatch.chdir(tmp_path)
+        path = save_report("# Report", "src/app.py")
+        assert os.path.isfile(path)
+        with open(path, encoding="utf-8") as f:
+            assert f.read() == "# Report"
+
+    def test_creates_relatorios_dir_if_missing(self, tmp_path, monkeypatch) -> None:
+        monkeypatch.chdir(tmp_path)
+        save_report("content", "file.py")
+        assert (tmp_path / "relatorios").is_dir()
+
+
+class TestGenerateReportName:
+    """Tests for generate_report_name."""
+
+    def test_contains_sanitized_path_and_timestamp(self) -> None:
+        name = generate_report_name("src/app.py")
+        assert "src_app_py" in name
+        assert name.startswith("relatorios/")
+        assert name.endswith(".md")

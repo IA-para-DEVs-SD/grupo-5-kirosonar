@@ -1,11 +1,28 @@
 """Git integration module via subprocess.
 
 Provides functions to discover changed files, retrieve per-file diffs,
-and read full file contents from the working tree.
+read full file contents, and resolve the repository root.
 """
 
+import os
 import subprocess
 import sys
+
+
+def get_repo_root() -> str:
+    """Return the root directory of the current Git repository.
+
+    Returns:
+        Absolute path to the repo root, or cwd if not inside a Git repo.
+    """
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return os.getcwd()
+    return result.stdout.strip()
 
 
 def get_changed_files() -> list[str]:
