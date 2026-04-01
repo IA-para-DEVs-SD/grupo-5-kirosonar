@@ -431,3 +431,46 @@ python scripts/install_hooks.py
 - Prompt importante para correção dos specs: O documento de requirements e design está utilizando a ferramenta kirosonar analyze?
 - Prompt subsequente: o analyze não corrige o código. Então modifique os testes para apenas verificar que os erros foram detectados
 - Prompt subsequente: Como não estamos modificando mais os arquivos, não precisamos dos requisitos para preservação de arquivo
+
+
+### Prompt para a criaçao de um projeto para realizar o teste
+
+```
+Crie um codigo em python que possu
+alguns desses erros no código:
+
+Variável não inicializada
+Possível null access
+Condição sempre verdadeira/falsa
+Método que deveria retornar algo mas não retorna
+Loop que nunca termina
+Comparação incorreta (== em string)
+Promise/exception não tratada
+🔐 Segurança (Security Issues)
+Senha hardcoded
+SQL concatenando string (SQL Injection)
+Input do usuário sem validação
+Uso de eval() ou execução dinâmica
+Logando dados sensíveis
+Upload sem validação de arquivo
+🧹 Code Smells (os mais fáceis de gerar)
+Método muito grande
+Muitos if/else
+Código duplicado
+Variável não usada
+Import não usado
+Nome de variável ruim (x, tmp, data1)
+Comentário óbvio
+Classe fazendo várias responsabilidades
+Código morto (nunca executa)
+⚡ Performance
+Criar objeto dentro de loop
+Consulta repetida dentro de loop
+String concatenada com + em loop
+Cálculo repetido desnecessariamente
+⚠️ Security Hotspots (revisão manual)
+Regex complexa
+Desserialização direta
+Caminho de arquivo vindo do usuário
+Execução de comando do sistema
+```
