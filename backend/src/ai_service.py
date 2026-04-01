@@ -61,9 +61,7 @@ def _show_progress(estimated: int, stop: threading.Event) -> None:
         pct = min(elapsed / estimated, 0.95) if estimated > 0 else 0
         filled = int(width * pct)
         bar = "█" * filled + "░" * (width - filled)
-        sys.stdout.write(
-            f"\r  [{bar}] {elapsed:.0f}s / ~{estimated}s estimado"
-        )
+        sys.stdout.write(f"\r  [{bar}] {elapsed:.0f}s / ~{estimated}s estimado")
         sys.stdout.flush()
         time.sleep(0.3)
     # Barra completa ao finalizar
@@ -110,9 +108,7 @@ def call_llm(prompt: str, show_progress: bool = True) -> str:
             timeout=_TIMEOUT,
         )
     except subprocess.TimeoutExpired:
-        raise RuntimeError(
-            f"Timeout: kiro-cli não respondeu em {_TIMEOUT} segundos."
-        )
+        raise RuntimeError(f"Timeout: kiro-cli não respondeu em {_TIMEOUT} segundos.")
     finally:
         stop.set()
         if progress_thread:

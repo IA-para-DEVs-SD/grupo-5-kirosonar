@@ -73,9 +73,7 @@ def split_into_chunks(code: str, file_path: str = "") -> list[str]:
     return chunks if len(chunks) > 1 else [code]
 
 
-def _apply_overlap(
-    lines: list[str], boundaries: list[int], chunks: list[str]
-) -> list[str]:
+def _apply_overlap(lines: list[str], boundaries: list[int], chunks: list[str]) -> list[str]:
     """Adiciona overlap entre chunks consecutivos.
 
     Cada chunk (exceto o primeiro) recebe as últimas _OVERLAP_LINES

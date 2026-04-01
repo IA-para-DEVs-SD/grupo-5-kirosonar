@@ -31,10 +31,7 @@ def _check_kiro_cli() -> None:
         return
     if shutil.which("kiro-cli") is None:
         print("❌ kiro-cli não encontrado no PATH.")
-        print(
-            "   Instale em:"
-            " https://docs.aws.amazon.com/kiro/latest/userguide/kiro-cli.html"
-        )
+        print("   Instale em: https://docs.aws.amazon.com/kiro/latest/userguide/kiro-cli.html")
         sys.exit(1)
 
 
@@ -65,9 +62,7 @@ def _progress_bar(done: int, total: int, width: int = 25) -> str:
     return f"[{bar}] {done}/{total}"
 
 
-def _analyze_chunk(
-    chunk: str, rules: str, file_path: str, chunk_label: str
-) -> str | None:
+def _analyze_chunk(chunk: str, rules: str, file_path: str, chunk_label: str) -> str | None:
     """Analisa um chunk individual via LLM."""
     prompt = build_prompt("", chunk, rules, f"{file_path} ({chunk_label})")
     try:
@@ -129,9 +124,7 @@ def _analyze_file(
     responses: list[str] = []
     with ThreadPoolExecutor(max_workers=min(total_c, 4)) as pool:
         futures = {
-            pool.submit(
-                _analyze_chunk, chunk, rules, file_path, f"trecho {i + 1}"
-            ): i
+            pool.submit(_analyze_chunk, chunk, rules, file_path, f"trecho {i + 1}"): i
             for i, chunk in enumerate(chunks)
         }
         done = 0
