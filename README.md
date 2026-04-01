@@ -106,7 +106,12 @@ docker run --rm -it -v "$(pwd):/project" -w /project kirosonar:latest analyze --
 docker run --rm -v "$(pwd):/project" -w /project kirosonar:latest report
 ```
 
-> O `-v "$(pwd):/project"` monta o diretório atual dentro do container, e o `-w /project` define como diretório de trabalho. O `-it` permite a interação com o auto-fix. Por padrão, o mock da LLM está ativado (`KIROSONAR_MOCK=1`). Para usar a LLM real, passe `-e KIROSONAR_MOCK=0` e monte o binário `kiro-cli` no container.
+> **Flags importantes:**
+> - `-it` é obrigatório para os comandos de análise. Sem ele, o prompt interativo do auto-fix ("Deseja aplicar o fix? s/n") não funciona e o container encerra com erro `EOFError`. Para comandos não-interativos como `report`, o `-it` é opcional.
+> - `-v "$(pwd):/project"` monta o diretório atual dentro do container.
+> - `-w /project` define o diretório de trabalho.
+>
+> Por padrão, o mock da LLM está ativado (`KIROSONAR_MOCK=1`). Para usar a LLM real, passe `-e KIROSONAR_MOCK=0` e monte o binário `kiro-cli` no container.
 
 ### Uso
 
