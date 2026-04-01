@@ -84,6 +84,35 @@ conda activate kirosonar
 pip install -e ".[dev]"
 ```
 
+### Usando com Docker (recomendado)
+
+Não precisa instalar Python, dependências ou configurar nada. Só precisa do Docker.
+
+```bash
+# Build da imagem (uma vez só)
+cd backend
+docker build -t kirosonar:latest .
+
+# Analisar um arquivo específico do seu projeto
+docker run --rm -it -v "$(pwd):/project" -w /project kirosonar:latest analyze --path src/meu_arquivo.js
+
+# Analisar arquivos alterados via git diff
+docker run --rm -it -v "$(pwd):/project" -w /project kirosonar:latest analyze
+
+# Usar regras customizadas
+docker run --rm -it -v "$(pwd):/project" -w /project kirosonar:latest analyze --rules regras_empresa.md
+
+# Listar relatórios gerados
+docker run --rm -v "$(pwd):/project" -w /project kirosonar:latest report
+```
+
+> **Flags importantes:**
+> - `-it` é obrigatório para os comandos de análise. Sem ele, o prompt interativo do auto-fix ("Deseja aplicar o fix? s/n") não funciona e o container encerra com erro `EOFError`. Para comandos não-interativos como `report`, o `-it` é opcional.
+> - `-v "$(pwd):/project"` monta o diretório atual dentro do container.
+> - `-w /project` define o diretório de trabalho.
+>
+> Por padrão, o mock da LLM está ativado (`KIROSONAR_MOCK=1`). Para usar a LLM real, passe `-e KIROSONAR_MOCK=0` e monte o binário `kiro-cli` no container.
+
 ### Uso
 
 ```bash

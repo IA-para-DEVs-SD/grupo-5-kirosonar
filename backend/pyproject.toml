@@ -10,7 +10,7 @@ requires-python = ">=3.11"
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["ruff", "pytest", "pytest-cov"]
+dev = ["ruff", "pytest", "pytest-cov", "hypothesis"]
 
 [project.scripts]
 kirosonar = "src.cli:main"
